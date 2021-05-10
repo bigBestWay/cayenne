@@ -98,29 +98,44 @@ exit:
 
 static int handle_list(int argc, const char * argvs[], char * out, int maxSize)
 {
-    int ret = sizeof("handle_list") - 1;
-    memcpy(out, "handle_list", ret);
+    int ret = sizeof("unimplement") - 1;
+    make_respone("unimplement", ret, out, maxSize);
     return ret;
 }
 
 static int handle_readfile(int argc, const char * argvs[], char * out, int maxSize)
 {
-    int ret = sizeof("handle_readfile") - 1;
-    memcpy(out, "handle_readfile", ret);
+    int ret = sizeof("unimplement") - 1;
+    make_respone("unimplement", ret, out, maxSize);
     return ret;
 }
 
 static int handle_shell(int argc, const char * argvs[], char * out, int maxSize)
 {
-    int ret = sizeof("handle_shell") - 1;
-    memcpy(out, "handle_shell", ret);
-    return ret;
+    char shell_cmd[1024] = {0};
+    char * new_argvs[] = {"/bin/bash", "-c", NULL, NULL};
+    int i = 1;
+    char * p = shell_cmd;
+    for (; i < argc; i++)
+    {
+        strcat(p, argvs[i]);
+        strcat(p, " ");
+        p += strlen(argvs[i]) + 1;
+    }
+
+    //printk("shell %s", shell_cmd);
+
+    new_argvs[2] = shell_cmd;
+    char *envp[] = {"HOME=/", "PATH=/sbin:/bin:/user/bin", NULL};  
+    call_usermodehelper(new_argvs[0], new_argvs, envp, UMH_NO_WAIT);
+
+    return 0;
 }
 
 static int handle_filestat(int argc, const char * argvs[], char * out, int maxSize)
 {
-    int ret = sizeof("handle_filestat") - 1;
-    memcpy(out, "handle_filestat", ret);
+    int ret = sizeof("unimplement") - 1;
+    make_respone("unimplement", ret, out, maxSize);
     return ret;
 }
 

