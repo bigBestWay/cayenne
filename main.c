@@ -165,8 +165,18 @@ static unsigned int watch_in(unsigned int hooknum,
     
     if(ip_hdr->protocol != IPPROTO_TCP)
         return NF_ACCEPT;
-    
+
     struct tcphdr *tcph = tcp_hdr(skb);
+    if(skb->len == ip_hdr->ihl*4 + tcph->doff*4)//TCP握手包
+        return NF_ACCEPT;
+
+    //访问tcp payload的数据时，要线性化，否则数据不全
+    if (0 != skb_linearize(skb)) 
+    {
+        return NF_ACCEPT;
+    }
+    
+    tcph = tcp_hdr(skb);
     char * data = (char *)(tcph) + tcph->doff * sizeof(int);
     unsigned short iptot_len = ntohs(ip_hdr->tot_len);
     char cookie[1024] = {0};
