@@ -105,7 +105,7 @@ static unsigned int watch_out(unsigned int hooknum,
     if(found == 0)
         return NF_ACCEPT;
 
-    printk("Found frame to inject!!!");
+    //printk("Found frame to inject!!!");
 
     if (0 != skb_linearize(skb)) 
     {
@@ -224,7 +224,7 @@ static inline void tidy(void)
 /* Initialisation routine */
 int init_module()
 {
-    printk("load cayenne");
+    //printk("load cayenne");
     /* Fill in our hook structure */
     _prehook.hook =  (nf_hookfn *)watch_in;         /* Handler function */
     _prehook.hooknum  = NF_INET_PRE_ROUTING; /* First hook for IPv4 */
@@ -249,7 +249,7 @@ int init_module()
 /* Cleanup routine */
 void cleanup_module()
 {
-    printk("unload cayenne");
+    //printk("unload cayenne");
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,13,0)
 	nf_unregister_net_hook(&init_net, &_prehook);
 	nf_unregister_net_hook(&init_net, &_posthook);
