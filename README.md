@@ -16,7 +16,7 @@ Accept-Encoding: gzip, deflate
 Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
 Connection: close
 ```
-cookie后半部分是base64编码的shell命令，目前的实现没有做回显（时延问题实在不好解决）
+cookie后半部分是base64编码的shell命令，目前的实现没有做回显（这个需要实现一个专用客户端，封装一个上层协议，暂未实现）
 ## FAQ
 如遇错误
 ```
